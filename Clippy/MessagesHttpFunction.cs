@@ -55,20 +55,20 @@ namespace Clippy
             Activity activity;
             try
             {
-                //var authorizationHeader = GetAuthorizationHeader(req);
+                var authorizationHeader = GetAuthorizationHeader(req);
                 activity = await ParseRequestBody(req);
-                //await JwtTokenValidation.AuthenticateRequest(activity, authorizationHeader, credentialProvider, channelProvider);
+                await JwtTokenValidation.AuthenticateRequest(activity, authorizationHeader, credentialProvider, channelProvider);
             }
             catch (JsonReaderException e)
             {
                 logger.LogDebug(e, "JSON parser failed to parse request payload.");
                 return new BadRequestResult();
             }
-            //catch (UnauthorizedAccessException e)
-            //{
-            //    logger.LogDebug(e, "Request was not propertly authorized.");
-            //    return new UnauthorizedResult();
-            //}
+            catch (UnauthorizedAccessException e)
+            {
+                logger.LogDebug(e, "Request was not propertly authorized.");
+                return new UnauthorizedResult();
+            }
 
             if (!activity.IsComposeExtensionQuery())
             {
